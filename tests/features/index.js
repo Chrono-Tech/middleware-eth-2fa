@@ -13,6 +13,7 @@ const models = require('../models'),
   exchangeMessageFactory = require('../../factories/messages/exchangeMessageFactory'),
   Web3 = require('web3'),
   config = require('../config'),
+  Wallet = require('ethereumjs-wallet'),
   spawn = require('child_process').spawn,
   WalletProvider = require('../../providers'),
   request = require('request-promise'),
@@ -23,6 +24,21 @@ module.exports = (ctx) => {
 
   before(async () => {
     await models.userWalletExchangeModel.remove({});
+
+    ctx.users.userFrom = {
+      wallet: Wallet.generate(_.random(Math.pow(10, 4), Math.pow(10, 6)))
+    };
+    ctx.users.userTo = {
+      wallet: Wallet.generate(_.random(Math.pow(10, 4), Math.pow(10, 6)))
+    };
+
+    ctx.users.userFrom2 = {
+      wallet: Wallet.generate(_.random(Math.pow(10, 4), Math.pow(10, 6)))
+    };
+    ctx.users.userTo2 = {
+      wallet: Wallet.generate(_.random(Math.pow(10, 4), Math.pow(10, 6)))
+    };
+
     ctx.service2faPid = spawn('node', ['index.js'], {env: process.env, stdio: 'ignore'});
     await Promise.delay(20000);
   });
@@ -47,7 +63,7 @@ module.exports = (ctx) => {
       return;
 
     await new Promise(res => {
-      let intervalId = setInterval(async ()=>{
+      let intervalId = setInterval(async () => {
         if (error)
           return;
         let tx = await Promise.promisify(web3.eth.getTransaction)(userFromTransferTx);
@@ -162,6 +178,8 @@ module.exports = (ctx) => {
       uri: `http://localhost:${config.rest.port}/wallets/${ctx.users.userFrom.wallet.getAddressString()}`,
       json: true
     });
+
+    console.log(walletList);
 
     let wallet = ctx.contracts.Wallet.at(walletList[0].address);
     let transferToWalletTx = await Promise.promisify(web3.eth.sendTransaction)({
@@ -278,8 +296,13 @@ module.exports = (ctx) => {
       json: true
     });
 
+    console.log(walletList);
+
     let wallet = ctx.contracts.Wallet.at(walletList[0].address);
     let pendings = await wallet.getPendings();
+
+    console.log(pendings);
+    console.log(wallet.address);
 
     let token = speakeasy.totp({ //client sideхмм
       secret: ctx.users.userFrom.secret,
@@ -467,7 +490,7 @@ module.exports = (ctx) => {
       return;
 
     await new Promise(res => {
-      let intervalId = setInterval(async ()=>{
+      let intervalId = setInterval(async () => {
         if (error)
           return;
         let tx = await Promise.promisify(web3.eth.getTransaction)(userFromTransferTx);

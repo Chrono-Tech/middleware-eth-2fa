@@ -85,18 +85,6 @@ describe('core/2fa', function () {
       },
       middleware: {
         wallet: Wallet.fromPrivateKey(Buffer.from(process.env.ORACLE_PRIVATE_KEY, 'hex'))
-      },
-      userFrom: {
-        wallet: Wallet.generate('1234')
-      },
-      userTo: {
-        wallet: Wallet.generate('5678')
-      },
-      userFrom2: {
-        wallet: Wallet.generate('91011')
-      },
-      userTo2: {
-        wallet: Wallet.generate('121314')
       }
     };
 
@@ -119,12 +107,12 @@ describe('core/2fa', function () {
   });
 
 
+  describe('features', () => featuresTests(ctx));
+
   describe('block', () => blockTests(ctx));
 
   describe('performance', () => performanceTests(ctx));
 
   describe('fuzz', () => fuzzTests(ctx));
-
-  describe('features', () => featuresTests(ctx));
 
 });

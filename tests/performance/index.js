@@ -17,12 +17,21 @@ const models = require('../models'),
   WalletProvider = require('../../providers'),
   request = require('request-promise'),
   expect = require('chai').expect,
+  Wallet = require('ethereumjs-wallet'),
   Promise = require('bluebird');
 
 module.exports = (ctx) => {
 
   before(async () => {
     await models.userWalletExchangeModel.remove({});
+
+    ctx.users.userFrom = {
+      wallet: Wallet.generate(_.random(Math.pow(10, 4), Math.pow(10, 6)))
+    };
+    ctx.users.userTo = {
+      wallet: Wallet.generate(_.random(Math.pow(10, 4), Math.pow(10, 6)))
+    };
+
     ctx.service2faPid = spawn('node', ['index.js'], {env: process.env, stdio: 'ignore'});
     await Promise.delay(20000);
   });
