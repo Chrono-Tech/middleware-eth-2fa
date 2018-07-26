@@ -106,13 +106,12 @@ describe('core/2fa', function () {
     ctx.nodePid.kill();
   });
 
+  describe('block', () => blockTests(ctx));
 
   describe('features', () => featuresTests(ctx));
 
-  //describe('block', () => blockTests(ctx));
+  describe('performance', () => performanceTests(ctx));
 
-  //describe('performance', () => performanceTests(ctx));
-
-  //describe('fuzz', () => fuzzTests(ctx));
+  describe('fuzz', () => fuzzTests(ctx));
 
 });

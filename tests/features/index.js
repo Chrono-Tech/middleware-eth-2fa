@@ -179,8 +179,6 @@ module.exports = (ctx) => {
       json: true
     });
 
-    console.log(walletList);
-
     let wallet = ctx.contracts.Wallet.at(walletList[0].address);
     let transferToWalletTx = await Promise.promisify(web3.eth.sendTransaction)({
       to: walletList[0].address,
@@ -296,13 +294,8 @@ module.exports = (ctx) => {
       json: true
     });
 
-    console.log(walletList);
-
     let wallet = ctx.contracts.Wallet.at(walletList[0].address);
     let pendings = await wallet.getPendings();
-
-    console.log(pendings);
-    console.log(wallet.address);
 
     let token = speakeasy.totp({ //client sideхмм
       secret: ctx.users.userFrom.secret,
